@@ -21,13 +21,19 @@ const DATA = [
         time: "2024-02-30",
         temp_min: 3,
         temp_max: 6,
-        weather: "clear"
+        weather: "cloudy"
     },
     {
         time: "2024-03-30",
         temp_min: 3,
         temp_max: 6,
-        weather: "clear"
+        weather: "rainy"
+    },
+    {
+        time: "2024-05-30",
+        temp_min: 3,
+        temp_max: 6,
+        weather: "cloudy"
     },
 ];
 
@@ -56,8 +62,19 @@ const UpcomingWeather = () => {
                 data={DATA}
                 renderItem={({item}) => (
                     <View style={styles.card}>
-                        <View style={styles.leftBall}><Text></Text></View>
-                        <Text style={styles.date}>{item.time}</Text>
+                        <View style={styles.leftBall}>
+                            {
+                                item.weather === 'sunny' ? <Icon name="sunny" size={40} style={{color: 'white'}}/> :
+                                item.weather === 'cloudy' ? <Icon name="cloud" size={40} style={{color: 'white'}}/> :
+                                item.weather === 'rainy' ? <Icon name="cloudy-snowing" size={40} style={{color: 'white'}}/> :
+                                <Icon name="sunny" size={40} style={{color: 'white'}}/>
+                            }
+                        </View>
+                        <View style={styles.details}>
+                            <Text style={styles.date}>{item.time}</Text>
+                            <Text style={styles.nature}>{item.weather}</Text>
+                            <Text style={styles.temp}>Maximum : {item.temp_max} Minimum : {item.temp_min}</Text>
+                        </View>
                         <View style={styles.sync}>
                             <Animated.View style={{ transform: [{ rotate: spin }] }}>
                                 <Icon name="sync" size={40}/>
@@ -86,7 +103,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#a9e681',
         flexDirection: 'row',
         alignItems: 'center',
-        width: 320,
+        width: "80%",
         marginBottom: 10,
         borderRadius: 5,
         paddingRight: 10,
@@ -102,14 +119,28 @@ const styles = StyleSheet.create({
     leftBall: {
         backgroundColor: '#2f610f',
         padding: 30,
-        width: 80,
-        marginLeft: -35,
+        // width: 95,
+        marginLeft: -25,
         marginRight: 10,
         borderRadius: 50
     },
 
+    details: {
+        paddingTop: 10,
+        paddingBottom: 10
+    },
+
     date: {
         fontSize: 20,
+        color: '#2f610f'
+    },
+
+    temp: {
+        fontSize: 15
+    },
+
+    nature: {
+        fontSize: 18
     },
     
     sync: {
