@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { 
     View,
     Text,
@@ -8,88 +8,95 @@ import {
     FlatList,
     Animated,
     Easing,
-    ScrollView
+    ScrollView,
+    RefreshControl
 } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const DATA = [
-    {
-        time: "2024-01-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "clear"
-    },
-    {
-        time: "2024-02-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "cloudy"
-    },
-    {
-        time: "2024-03-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "rainy"
-    },
-    {
-        time: "2024-05-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "cloudy"
-    },
-    {
-        time: "2024-08-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "clear"
-    },
-    {
-        time: "2024-09-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "rainy"
-    },
-    // ...
-    {
-        time: "2024-01-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "clear"
-    },
-    {
-        time: "2024-02-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "cloudy"
-    },
-    {
-        time: "2024-03-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "rainy"
-    },
-    {
-        time: "2024-05-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "cloudy"
-    },
-    {
-        time: "2024-08-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "clear"
-    },
-    {
-        time: "2024-09-30",
-        temp_min: 3,
-        temp_max: 6,
-        weather: "rainy"
-    },
-];
-
 const UpcomingWeather = () => {
+
     const spinValue = useRef(new Animated.Value(0)).current;
+
+    //used to control the spinner when refreshing the scrolling view
+    const [Refreshing, setRefreshing] = useState(false);
+
+    const [data, setData] = useState(
+        [
+            {
+                time: "2024-01-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "clear"
+            },
+            {
+                time: "2024-02-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "cloudy"
+            },
+            {
+                time: "2024-03-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "rainy"
+            },
+            {
+                time: "2024-05-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "cloudy"
+            },
+            {
+                time: "2024-08-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "clear"
+            },
+            {
+                time: "2024-09-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "rainy"
+            },
+            // ...
+            {
+                time: "2024-01-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "clear"
+            },
+            {
+                time: "2024-02-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "cloudy"
+            },
+            {
+                time: "2024-03-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "rainy"
+            },
+            {
+                time: "2024-05-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "cloudy"
+            },
+            {
+                time: "2024-08-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "clear"
+            },
+            {
+                time: "2024-09-30",
+                temp_min: 3,
+                temp_max: 6,
+                weather: "rainy"
+            },
+        ]
+    );
 
     useEffect(() => {
     Animated.loop(
@@ -102,14 +109,33 @@ const UpcomingWeather = () => {
     ).start();
     }, [spinValue]);
 
+    //used to rotate the icon
     const spin = spinValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
     });
+
+    const handleRefresh = () => {
+        setRefreshing(true);
+        setData([{
+            time: "2027-09-30",
+            temp_min: 3,
+            temp_max: 6,
+            weather: "rainy"
+        }, ...data]);
+        setRefreshing(false);
+    }; 
 
     return(
         <SafeAreaView style={styles.container}>
-            <ScrollView>
+            <ScrollView refreshControl={
+                    <RefreshControl 
+                        refreshing={Refreshing}
+                        onRefresh={handleRefresh}
+                        colors={['red']}
+                    />
+                }
+            >
                 <ImageBackground
                     source={require('../../../assets/images/weather.jpg')}
                     style={styles.bgImage}
@@ -119,7 +145,7 @@ const UpcomingWeather = () => {
                     </View>
                 </ImageBackground>
                 <FlatList
-                    data={DATA}
+                    data={data}
                     renderItem={({item}) => (
                         <View style={styles.card}>
                             <View style={styles.leftBall}>
@@ -154,7 +180,7 @@ const UpcomingWeather = () => {
                     </View>
                 </ImageBackground>
                 <FlatList
-                    data={DATA}
+                    data={data}
                     renderItem={({item}) => (
                         <View style={styles.card}>
                             <View style={styles.leftBall}>
@@ -213,7 +239,7 @@ const styles = StyleSheet.create({
 
     list: {
         flex: 1,
-        marginBottom: 5
+        marginBottom: 5,
     },
 
     listContent: {

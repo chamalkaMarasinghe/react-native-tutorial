@@ -10,6 +10,7 @@ const App = () => {
     return (
         <View style={styles.container}>
             <UpcomingWeather />
+            {/* <CurrentWeather /> */}
         </View>
     );
 }
