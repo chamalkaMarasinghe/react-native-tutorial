@@ -2,6 +2,7 @@ import React, {useEffect, useRef} from "react";
 import { 
     View,
     Text,
+    ImageBackground,
     StyleSheet,
     SafeAreaView,
     FlatList,
@@ -58,6 +59,14 @@ const UpcomingWeather = () => {
 
     return(
         <SafeAreaView style={styles.container}>
+            <ImageBackground
+                source={require('../../../assets/images/weather.jpg')}
+                style={styles.bgImage}
+            >
+                <View style={styles.banner}>
+                    <Text style={styles.bannerText}>Upcoming Weather</Text>
+                </View>
+            </ImageBackground>
             <FlatList
                 data={DATA}
                 renderItem={({item}) => (
@@ -91,12 +100,31 @@ const UpcomingWeather = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 15
+    },
+
+    bgImage: {
+        flex: 0.3,
+        marginBottom: 15
+    },
+
+    banner: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)'
+    },
+
+    bannerText: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: 'white',
+        width: '80%'
     },
 
     list: {
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
+        // backgroundColor: 'red'
     },
 
     card: {
