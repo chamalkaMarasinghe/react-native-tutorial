@@ -9,14 +9,15 @@ import {
     Animated,
     Easing,
     ScrollView,
-    RefreshControl
+    RefreshControl,
+    Dimensions
 } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const UpcomingWeather = () => {
 
     const spinValue = useRef(new Animated.Value(0)).current;
-
+    const [orientation, setOrientation] = useState('portrait');
     //used to control the spinner when refreshing the scrolling view
     const [Refreshing, setRefreshing] = useState(false);
 
@@ -98,6 +99,8 @@ const UpcomingWeather = () => {
         ]
     );
 
+
+    //used to rotating animation of the sync icon 
     useEffect(() => {
     Animated.loop(
         Animated.timing(spinValue, {
@@ -109,12 +112,27 @@ const UpcomingWeather = () => {
     ).start();
     }, [spinValue]);
 
+    //used to detect the orientation of the mobile device
+    useEffect(() => {
+        const updateOrientation = () => {
+            const { width, height } = Dimensions.get('window');
+            setOrientation(width > height ? 'landscape' : 'portrait');
+        };
+        updateOrientation(); // Initial check
+        Dimensions.addEventListener('change', updateOrientation);
+        // return () => {
+        //     // Cleanup event listener on component unmount
+        //     Dimensions.removeEventListener('change', updateOrientation);
+        // };
+    }, []);
+
     //used to rotate the icon
     const spin = spinValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
     });
 
+    //task at the refreshment flatlist
     const handleRefresh = () => {
         setRefreshing(true);
         setData([{
@@ -128,14 +146,7 @@ const UpcomingWeather = () => {
 
     return(
         <SafeAreaView style={styles.container}>
-            <ScrollView refreshControl={
-                    <RefreshControl 
-                        refreshing={Refreshing}
-                        onRefresh={handleRefresh}
-                        colors={['red']}
-                    />
-                }
-            >
+            <ImageBackground source={require('../../../assets/images/background1.jpg')} style={{flex: 1}}>
                 <ImageBackground
                     source={require('../../../assets/images/weather.jpg')}
                     style={styles.bgImage}
@@ -145,6 +156,13 @@ const UpcomingWeather = () => {
                     </View>
                 </ImageBackground>
                 <FlatList
+                    refreshControl={
+                        <RefreshControl 
+                            refreshing={Refreshing}
+                            onRefresh={handleRefresh}
+                            colors={['red']}
+                        />
+                    }
                     data={data}
                     renderItem={({item}) => (
                         <View style={styles.card}>
@@ -168,45 +186,11 @@ const UpcomingWeather = () => {
                             </View>
                         </View>
                     )}
-                    style={styles.list}
+                    //according to the orientation of the mobile device two different styling was applied
+                    style={orientation === "portrait" ? styles.listPortrait : styles.listLandscape}
                     contentContainerStyle={styles.listContent}
-                />
-                <ImageBackground
-                    source={require('../../../assets/images/weather.jpg')}
-                    style={styles.bgImage}
-                >
-                    <View style={styles.banner}>
-                        <Text style={styles.bannerText}>outgoing Weather !</Text>
-                    </View>
-                </ImageBackground>
-                <FlatList
-                    data={data}
-                    renderItem={({item}) => (
-                        <View style={styles.card}>
-                            <View style={styles.leftBall}>
-                                {
-                                    item.weather === 'sunny' ? <Icon name="sunny" size={40} style={{color: 'white'}}/> :
-                                    item.weather === 'cloudy' ? <Icon name="cloud" size={40} style={{color: 'white'}}/> :
-                                    item.weather === 'rainy' ? <Icon name="cloudy-snowing" size={40} style={{color: 'white'}}/> :
-                                    <Icon name="sunny" size={40} style={{color: 'white'}}/>
-                                }
-                            </View>
-                            <View style={styles.details}>
-                                <Text style={styles.date}>{item.time}</Text>
-                                <Text style={styles.nature}>{item.weather}</Text>
-                                <Text style={styles.temp}>Maximum : {item.temp_max} Minimum : {item.temp_min}</Text>
-                            </View>
-                            <View style={styles.sync}>
-                                <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                                    <Icon name="sync" size={40}/>
-                                </Animated.View>
-                            </View>
-                        </View>
-                    )}
-                    style={styles.list}
-                    contentContainerStyle={styles.listContent}
-                />
-            </ScrollView>
+                />                
+            </ImageBackground>
         </SafeAreaView>
     );
 };
@@ -217,29 +201,43 @@ const styles = StyleSheet.create({
     },
 
     bgImage: {
-        flex: 0.3,
-        marginBottom: 15
+        flex: 0.6,
+        overflow: 'hidden',
+        borderBottomLeftRadius: 150,
+        borderBottomRightRadius: 150,
     },
 
     banner: {
         flex: 1,
-        paddingTop: "15%",
-        paddingBottom: "15%",
-        justifyContent: 'center',
+        paddingTop: "10%",
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.6)'
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
     },
 
     bannerText: {
         fontSize: 30,
         fontWeight: 'bold',
         color: 'white',
-        width: '80%'
+        width: '80%',
+        textAlign: 'center'
     },
 
-    list: {
+    listLandscape: {
         flex: 1,
-        marginBottom: 5,
+        position: 'absolute',
+        top: "45%",
+        left: 0,
+        right: 0,
+        bottom: 0,
+    },
+
+    listPortrait: {
+        flex: 1,
+        position: 'absolute',
+        top: "15%",
+        left: 0,
+        right: 0,
+        bottom: 0,
     },
 
     listContent: {
@@ -248,6 +246,7 @@ const styles = StyleSheet.create({
 
     card: {
         backgroundColor: '#a9e681',
+        // backgroundColor: 'rgba(49, 163, 62 0.5)',
         flexDirection: 'row',
         alignItems: 'center',
         width: "80%",
