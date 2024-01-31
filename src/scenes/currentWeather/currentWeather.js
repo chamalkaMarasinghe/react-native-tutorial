@@ -22,7 +22,7 @@ const CurrentWeather = ({navigation}) => {
                             <Text style={styles.highlow}>High : 8</Text>
                             <Text style={styles.highlow}>Low : 6</Text>
                         </View>
-                        <Button title="upcomings" onPress={() => {navigation.navigate('upcoming')}}/>
+                        {/* <Button title="upcomings" onPress={() => {navigation.navigate('upcoming')}}/> */}
                     </View>
                     <View style={styles.bodyWrapper}>
                         <Text style={styles.condition}>It's Sunny</Text>
@@ -76,7 +76,7 @@ const styles=  StyleSheet.create({
         alignItems: 'flex-start',
         paddingLeft: 20,
         paddingRight: 20,
-        paddingTop: 120
+        paddingTop: 155
     },
 
     condition : {

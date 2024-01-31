@@ -1,38 +1,43 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import CurrentWeather from "./src/scenes/currentWeather/currentWeather";
 import UpcomingWeather from "./src/scenes/upcomingWeather/upcomingWeather";
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 const App = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen 
+            <Tab.Navigator
+                screenOptions={({ route }) => ({
+                    tabBarIcon: ({ focused, color, size }) => {
+                        let iconName;
+                        if (route.name === 'current') {
+                            iconName = focused ? 'house' : 'house';
+                        } else if (route.name === 'upcoming') {
+                            iconName = focused ? 'umbrella' : 'umbrella';
+                        }
+                        return <Icon name={iconName} size={size} color={color} />;
+                    },
+                    tabBarActiveTintColor: 'green',
+                    tabBarInactiveTintColor: 'gray',
+                })}
+            >
+                <Tab.Screen 
                     name="current" 
-                    component={CurrentWeather} 
-                    options={{ 
-                        title: 'Home', 
-                        headerStyle: styles.headerStyle, 
-                        headerTintColor: '#fff',
-                        headerTitleStyle: {
-                            fontWeight: 'bold',
-                        },
-                    }}
+                    component={CurrentWeather}
+                    options={{ title: 'Home', headerStyle: styles.headerStyle, headerTintColor: '#fff' }}
                 />
-                <Stack.Screen 
+                <Tab.Screen 
                     name="upcoming" 
                     component={UpcomingWeather} 
-                    options={{ 
-                        title: 'Upcoming Weather', 
-                        headerStyle: styles.headerStyle, 
-                        headerTintColor: '#fff' 
-                    }}
+                    options={{ title: 'Upcoming', headerStyle: styles.headerStyle, headerTintColor: '#fff', tabBarBadge: 3 }}
                 />
-            </Stack.Navigator>
+            </Tab.Navigator>
         </NavigationContainer>
     );
 }
