@@ -1,44 +1,50 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import CurrentWeather from "./src/scenes/currentWeather/currentWeather";
 import UpcomingWeather from "./src/scenes/upcomingWeather/upcomingWeather";
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 
 const App = () => {
     return (
         <NavigationContainer>
             <Tab.Navigator
-                screenOptions={({ route }) => ({
-                    tabBarIcon: ({ focused, color, size }) => {
-                        let iconName;
-                        if (route.name === 'current') {
-                            iconName = focused ? 'house' : 'house';
-                        } else if (route.name === 'upcoming') {
-                            iconName = focused ? 'umbrella' : 'umbrella';
-                        }
-                        return <Icon name={iconName} size={size} color={color} />;
+                screenOptions={{
+                    tabBarIndicatorStyle: {
+                        backgroundColor: 'white', // Set the color of the indicator line
                     },
-                    tabBarActiveTintColor: 'green',
-                    tabBarInactiveTintColor: 'gray',
-                })}
+                    tabBarActiveTintColor: 'white',
+                    tabBarInactiveTintColor: 'white',
+                    tabBarStyle: { backgroundColor: 'green' }
+                }}
             >
                 <Tab.Screen 
                     name="current" 
                     component={CurrentWeather}
-                    options={{ title: 'Home', headerStyle: styles.headerStyle, headerTintColor: '#fff' }}
+                    options={{ 
+                        title: 'Home', 
+                    }}
                 />
                 <Tab.Screen 
                     name="upcoming" 
                     component={UpcomingWeather} 
-                    options={{ title: 'Upcoming', headerStyle: styles.headerStyle, headerTintColor: '#fff', tabBarBadge: 3 }}
+                    options={{ 
+                        title: `Upcomings`,
+                        tabBarLabel: ({ focused, color }) => (
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Text style={{color: 'white', marginRight: 10}}>UPCOMINGS</Text>
+                                <Text style={styles.badge}>5</Text>
+                            </View>
+                        ),
+                    }}
                 />
             </Tab.Navigator>
-        </NavigationContainer>
+        </NavigationContainer>  
     );
 }
 
@@ -49,6 +55,17 @@ const styles=  StyleSheet.create({
     
     headerStyle: {
         backgroundColor: 'green',
+    },
+
+    badge : {
+        fontWeight: 'bold',
+        fontSize: 13,
+        marginTop: 1,
+        color: 'gray',
+        backgroundColor: 'white',
+        width: 20,
+        textAlign: 'center',
+        borderRadius: 20
     }
 });
 
