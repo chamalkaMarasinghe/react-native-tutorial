@@ -3,11 +3,12 @@ import {
     SafeAreaView, 
     View, 
     Text,
-    StyleSheet 
+    StyleSheet, 
+    Button
 } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const CurrentWeather = () => {
+const CurrentWeather = ({navigation}) => {
     return (
         <SafeAreaView style={styles.safeAreaStyling}>
             <View style={styles.wrapper}>
@@ -19,6 +20,7 @@ const CurrentWeather = () => {
                         <Text style={styles.highlow}>High : 8</Text>
                         <Text style={styles.highlow}>Low : 6</Text>
                     </View>
+                    <Button title="upcomings" onPress={() => {navigation.navigate('upcoming')}}/>
                 </View>
                 <View style={styles.bodyWrapper}>
                     <Text style={styles.condition}>It's Sunny</Text>
