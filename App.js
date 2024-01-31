@@ -11,8 +11,27 @@ const App = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator>
-                <Stack.Screen name="current" component={CurrentWeather}/>
-                <Stack.Screen name="upcoming" component={UpcomingWeather}/>
+                <Stack.Screen 
+                    name="current" 
+                    component={CurrentWeather} 
+                    options={{ 
+                        title: 'Home', 
+                        headerStyle: styles.headerStyle, 
+                        headerTintColor: '#fff',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                    }}
+                />
+                <Stack.Screen 
+                    name="upcoming" 
+                    component={UpcomingWeather} 
+                    options={{ 
+                        title: 'Upcoming Weather', 
+                        headerStyle: styles.headerStyle, 
+                        headerTintColor: '#fff' 
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );
@@ -21,6 +40,10 @@ const App = () => {
 const styles=  StyleSheet.create({
     container : {
         flex: 1
+    },
+    
+    headerStyle: {
+        backgroundColor: 'green',
     }
 });
 

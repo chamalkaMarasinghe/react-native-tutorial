@@ -4,29 +4,32 @@ import {
     View, 
     Text,
     StyleSheet, 
-    Button
+    Button,
+    ScrollView
 } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const CurrentWeather = ({navigation}) => {
     return (
         <SafeAreaView style={styles.safeAreaStyling}>
-            <View style={styles.wrapper}>
-                <View style={styles.container}>
-                    <Icon  name="light-mode" size={150}/>
-                    <Text style={styles.temp}>6</Text>
-                    <Text style={styles.feels}>Feels Like 5</Text>
-                    <View>
-                        <Text style={styles.highlow}>High : 8</Text>
-                        <Text style={styles.highlow}>Low : 6</Text>
+            <ScrollView>
+                <View style={styles.wrapper}>
+                    <View style={styles.container}>
+                        <Icon  name="light-mode" size={150}/>
+                        <Text style={styles.temp}>6</Text>
+                        <Text style={styles.feels}>Feels Like 5</Text>
+                        <View>
+                            <Text style={styles.highlow}>High : 8</Text>
+                            <Text style={styles.highlow}>Low : 6</Text>
+                        </View>
+                        <Button title="upcomings" onPress={() => {navigation.navigate('upcoming')}}/>
                     </View>
-                    <Button title="upcomings" onPress={() => {navigation.navigate('upcoming')}}/>
+                    <View style={styles.bodyWrapper}>
+                        <Text style={styles.condition}>It's Sunny</Text>
+                        <Text style={styles.description}>Lorem Z ipsum dolor sit amet, consectetur adipiscingrure dolor in reprehenderit in vol</Text>
+                    </View>
                 </View>
-                <View style={styles.bodyWrapper}>
-                    <Text style={styles.condition}>It's Sunny</Text>
-                    <Text style={styles.description}>Lorem Z ipsum dolor sit amet, consectetur adipiscingrure dolor in reprehenderit in vol</Text>
-                </View>
-            </View>
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -46,6 +49,7 @@ const styles=  StyleSheet.create({
     },
 
     container: {
+        flex: 1,
         alignItems: 'center'
     },
     
@@ -65,12 +69,14 @@ const styles=  StyleSheet.create({
 
     bodyWrapper: {
         flex: 1,
+        flexDirection: 'column',
         width: '100%',
         // backgroundColor: 'red',
         justifyContent: 'flex-end',
         alignItems: 'flex-start',
         paddingLeft: 20,
-        paddingRight: 20
+        paddingRight: 20,
+        paddingTop: 120
     },
 
     condition : {
