@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React, {useState, useEffect} from "react";
+import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -11,6 +11,24 @@ import UpcomingWeather from "./src/scenes/upcomingWeather/upcomingWeather";
 const Tab = createMaterialTopTabNavigator();
 
 const App = () => {
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false);
+        }, 3000);
+    }, []);
+
+    if(loading){
+        return(
+            <View style={styles.loadingScreen}>
+                <ActivityIndicator size={100} color={'green'}/>
+            </View>
+        );
+    }
+
+
     return (
         <NavigationContainer>
             <Tab.Navigator
@@ -49,6 +67,12 @@ const App = () => {
 }
 
 const styles=  StyleSheet.create({
+    loadingScreen: {
+        flex: 1,
+        justifyContent: 'center',
+
+    },
+
     container : {
         flex: 1
     },
