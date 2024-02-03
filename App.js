@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
-import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
+import { View, StyleSheet, Text, ActivityIndicator, StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import PushNotification from "react-native-push-notification";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -8,29 +9,23 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import CurrentWeather from "./src/scenes/currentWeather/currentWeather";
 import UpcomingWeather from "./src/scenes/upcomingWeather/upcomingWeather";
 
+
 const Tab = createMaterialTopTabNavigator();
 
 const App = () => {
 
-    const [loading, setLoading] = useState(true);
-
     useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 3000);
+        //.........................................
+        //createing notification channel
+        // PushNotification.createChannel({
+        //     channelId: "channel-01",
+        //     channelName: "testingChannel"
+        // });
     }, []);
-
-    if(loading){
-        return(
-            <View style={styles.loadingScreen}>
-                <ActivityIndicator size={100} color={'green'}/>
-            </View>
-        );
-    }
-
 
     return (
         <NavigationContainer>
+            <StatusBar backgroundColor={'green'} barStyle={'light-content'}/>
             <Tab.Navigator
                 screenOptions={{
                     tabBarIndicatorStyle: {

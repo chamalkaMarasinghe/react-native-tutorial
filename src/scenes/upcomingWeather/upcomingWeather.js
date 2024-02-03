@@ -10,8 +10,10 @@ import {
     Easing,
     ScrollView,
     RefreshControl,
-    Dimensions
+    Dimensions,
+    TouchableOpacity
 } from "react-native";
+import PushNotification from "react-native-push-notification";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const UpcomingWeather = () => {
@@ -99,33 +101,6 @@ const UpcomingWeather = () => {
         ]
     );
 
-
-    //used to rotating animation of the sync icon 
-    useEffect(() => {
-    Animated.loop(
-        Animated.timing(spinValue, {
-        toValue: 1,
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-        })
-    ).start();
-    }, [spinValue]);
-
-    //used to detect the orientation of the mobile device
-    useEffect(() => {
-        const updateOrientation = () => {
-            const { width, height } = Dimensions.get('window');
-            setOrientation(width > height ? 'landscape' : 'portrait');
-        };
-        updateOrientation(); // Initial check
-        Dimensions.addEventListener('change', updateOrientation);
-        // return () => {
-        //     // Cleanup event listener on component unmount
-        //     Dimensions.removeEventListener('change', updateOrientation);
-        // };
-    }, []);
-
     //used to rotate the icon
     const spin = spinValue.interpolate({
         inputRange: [0, 1],
@@ -142,7 +117,54 @@ const UpcomingWeather = () => {
             weather: "rainy"
         }, ...data]);
         setRefreshing(false);
-    }; 
+    };
+    
+    const sendNotification = (item) =>{
+        PushNotification.localNotification({
+            channelId: "channel-02",
+            title: `Weather report for ${item.time}`,
+            message: `It's a ${item.weather} day`
+        });
+        PushNotification.getChannels(function (channel_ids) {
+            console.log(channel_ids); // ['channel_id_1']
+        });
+    }
+
+    //used to rotating animation of the sync icon 
+    useEffect(() => {
+    Animated.loop(
+        Animated.timing(spinValue, {
+        toValue: 1,
+        duration: 3000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+        })
+    ).start();
+    }, [spinValue]);
+
+
+    //used to detect the orientation of the mobile device
+    useEffect(() => {
+        const updateOrientation = () => {
+            const { width, height } = Dimensions.get('window');
+            setOrientation(width > height ? 'landscape' : 'portrait');
+        };
+        updateOrientation(); // Initial check
+        Dimensions.addEventListener('change', updateOrientation);
+        // return () => {
+        //     // Cleanup event listener on component unmount
+        //     Dimensions.removeEventListener('change', updateOrientation);
+        // };
+
+        //.........................................
+        //createing notification channel
+        PushNotification.createChannel(
+            {
+                channelId: "channel-02",
+                channelName: "testingChannel"
+            },
+            created => console.log(`my channel:  ${created}`));//falls means channel is already exists
+    }, []);
 
     return(
         <SafeAreaView style={styles.container}>
@@ -165,26 +187,31 @@ const UpcomingWeather = () => {
                     }
                     data={data}
                     renderItem={({item}) => (
-                        <View style={styles.card}>
-                            <View style={styles.leftBall}>
-                                {
-                                    item.weather === 'sunny' ? <Icon name="sunny" size={40} style={{color: 'white'}}/> :
-                                    item.weather === 'cloudy' ? <Icon name="cloud" size={40} style={{color: 'white'}}/> :
-                                    item.weather === 'rainy' ? <Icon name="cloudy-snowing" size={40} style={{color: 'white'}}/> :
-                                    <Icon name="sunny" size={40} style={{color: 'white'}}/>
-                                }
+                        <TouchableOpacity 
+                            style={styles.touchableOpacityForCard}
+                            onPress={() => {sendNotification(item)}}
+                        >
+                            <View style={styles.card}>
+                                <View style={styles.leftBall}>
+                                    {
+                                        item.weather === 'sunny' ? <Icon name="sunny" size={40} style={{color: 'white'}}/> :
+                                        item.weather === 'cloudy' ? <Icon name="cloud" size={40} style={{color: 'white'}}/> :
+                                        item.weather === 'rainy' ? <Icon name="cloudy-snowing" size={40} style={{color: 'white'}}/> :
+                                        <Icon name="sunny" size={40} style={{color: 'white'}}/>
+                                    }
+                                </View>
+                                <View style={styles.details}>
+                                    <Text style={styles.date}>{item.time}</Text>
+                                    <Text style={styles.nature}>{item.weather}</Text>
+                                    <Text style={styles.temp}>Maximum : {item.temp_max} Minimum : {item.temp_min}</Text>
+                                </View>
+                                <View style={styles.sync}>
+                                    <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                                        <Icon name="sync" size={40}/>
+                                    </Animated.View>
+                                </View>
                             </View>
-                            <View style={styles.details}>
-                                <Text style={styles.date}>{item.time}</Text>
-                                <Text style={styles.nature}>{item.weather}</Text>
-                                <Text style={styles.temp}>Maximum : {item.temp_max} Minimum : {item.temp_min}</Text>
-                            </View>
-                            <View style={styles.sync}>
-                                <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                                    <Icon name="sync" size={40}/>
-                                </Animated.View>
-                            </View>
-                        </View>
+                        </TouchableOpacity>
                     )}
                     //according to the orientation of the mobile device two different styling was applied
                     style={orientation === "portrait" ? styles.listPortrait : styles.listLandscape}
@@ -242,6 +269,10 @@ const styles = StyleSheet.create({
 
     listContent: {
         alignItems: 'center',
+    },
+
+    touchableOpacityForCard: {
+        width: "100%"
     },
 
     card: {
