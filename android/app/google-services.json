@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "179106954925",
+    "project_id": "myreactnativetestingproject",
+    "storage_bucket": "myreactnativetestingproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179106954925:android:e6b8bddf97cd1f8291d024",
+        "android_client_info": {
+          "package_name": "com.newandroidapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGEc84lA_6tDoeCJ59oahSt-cyOwghsls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

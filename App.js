@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import { View, StyleSheet, Text, ActivityIndicator, StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import PushNotification from "react-native-push-notification";
+import messaging from '@react-native-firebase/messaging';
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -14,14 +15,54 @@ const Tab = createMaterialTopTabNavigator();
 
 const App = () => {
 
+    async function requestUserPermission() {
+        const authStatus = await messaging().requestPermission();
+        const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+        if (enabled) {
+            console.log('Authorization status:', authStatus);
+        }
+    }
+
+    const getToken = async() => {
+        const token = await messaging().getToken();
+        console.log(`firebase token : ${token}`);
+    }
+
     useEffect(() => {
         //.........................................
-        //createing notification channel
-        // PushNotification.createChannel({
-        //     channelId: "channel-01",
-        //     channelName: "testingChannel"
-        // });
-    }, []);
+        //createing local notification channel using push notifications
+        PushNotification.createChannel(
+            {
+                channelId: "channel-02",
+                channelName: "testingChannel"
+            },
+            created => console.log(`my channel:  ${created}`)
+        );//falls means channel is already exists
+
+        //create fire base notifications for remote notifications
+        requestUserPermission();
+        getToken();
+        
+        //background handler - firebase
+        messaging().setBackgroundMessageHandler(async remoteMessage => {
+            console.log('Message handled when app in the background!', remoteMessage);
+        });
+
+        //foreground handler - fire base
+        messaging().onMessage(async remoteMessage => {
+            // Handle foreground notifications
+            console.log('Message handled when app in the foreground!', remoteMessage.notification);
+            // Display notification manually if needed
+            // You may use a third-party library like react-native-push-notification
+            // to display the notification
+            PushNotification.localNotification({
+                channelId: "channel-02",
+                title: remoteMessage.notification.title,
+                message: remoteMessage.notification.body
+            });
+
+        });
+    }, [])
 
     return (
         <NavigationContainer>

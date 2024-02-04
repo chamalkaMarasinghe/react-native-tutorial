@@ -101,7 +101,7 @@ const UpcomingWeather = () => {
         ]
     );
 
-    //used to rotate the icon
+    //used to rotate the sync icon
     const spin = spinValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
@@ -155,15 +155,6 @@ const UpcomingWeather = () => {
         //     // Cleanup event listener on component unmount
         //     Dimensions.removeEventListener('change', updateOrientation);
         // };
-
-        //.........................................
-        //createing notification channel
-        PushNotification.createChannel(
-            {
-                channelId: "channel-02",
-                channelName: "testingChannel"
-            },
-            created => console.log(`my channel:  ${created}`));//falls means channel is already exists
     }, []);
 
     return(
